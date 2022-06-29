@@ -72,46 +72,38 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, ref} from 'vue';
 import axios from "axios";
 
 export default defineComponent({
   name: 'Home',
   setup() {
 
-    const listData = [];
-    for (let i = 0; i < 23; i++) {
-      listData.push({
-        href: 'https://www.antdv.com/',
-        title: `ant design vue part ${i}`,
-        avatar: 'https://joeschmoe.io/api/v1/random',
-        description:
-            'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-        content:
-            'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-      });
-    }
+    const ebooks = ref();
 
-    console.log('setup')
-    axios.get('http://localhost:8880/ebook/list?name=Spring')
+    axios.get('http://localhost:8880/ebook/list')
         .then(res => {
-          console.log(res)
+          const data = res.data;
+          ebooks.value = data.content;
         })
 
     return {
-      listData,
-      pagination: {
-        onChange: (page: number) => {
-          console.log(page);
-        },
-        pageSize: 3,
-      },
       actions: [
         {type: 'StarOutlined', text: '156'},
         {type: 'LikeOutlined', text: '156'},
         {type: 'MessageOutlined', text: '2'},
-      ]
+      ],
+      ebooks
     }
   }
 });
 </script>
+<style>
+.ant-avatar {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 8%;
+  margin: 5px 0;
+}
+</style>

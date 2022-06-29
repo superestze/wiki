@@ -81,7 +81,7 @@ export default defineComponent({
 
     const ebooks = ref();
 
-    axios.get('http://localhost:8880/ebook/list')
+    axios.get('/ebook/list')
         .then(res => {
           const data = res.data;
           ebooks.value = data.content;

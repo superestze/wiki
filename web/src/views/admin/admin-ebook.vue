@@ -77,11 +77,12 @@ export default defineComponent({
 
     const handleQuery = (params: any) => {
       loading.value = true
-      axios.get('/ebook/list', params).then(res => {
+      axios.get('/ebook/list', {params}).then(res => {
         loading.value = false
         const data = res.data
-        ebooks.value = data.content
+        ebooks.value = data.content.list
         pagination.value.current = params.page
+        pagination.value.total = data.content.total
       })
     }
 
@@ -92,9 +93,11 @@ export default defineComponent({
       })
     }
 
-    onMounted(()=>{
-      console.log(11)
-      handleQuery({})
+    onMounted(() => {
+      handleQuery({
+        page: 1,
+        size: pagination.value.pageSize
+      })
     })
 
 

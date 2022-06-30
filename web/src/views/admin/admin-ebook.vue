@@ -17,7 +17,7 @@
 
         <template v-slot:action="{ text, record }">
           <a-space type="small">
-            <a-button type="primary"> 编辑</a-button>
+            <a-button type="primary" @click="edit"> 编辑</a-button>
           </a-space>
           <a-button type="danger"> 删除</a-button>
         </template>
@@ -26,6 +26,15 @@
       </a-table>
     </a-layout-content>
   </a-layout>
+
+  <a-modal
+      v-model:visible="modalVisible"
+      title="电子书表单"
+      :confirm-loading="modalLoading"
+      @ok="handleModalOk">
+    <p>test</p>
+
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -36,6 +45,20 @@ import axios from "axios";
 export default defineComponent({
   name: 'AdminEbook',
   setup() {
+    const modalVisible = ref(false)
+    const modalLoading = ref(false)
+
+    const handleModalOk = () => {
+      modalLoading.value = true
+      setTimeout(() => {
+        modalVisible.value = false
+        modalLoading.value = false
+      }, 2000)
+    }
+
+    const edit = () => {
+      modalVisible.value = true
+    }
     const ebooks = ref()
     const pagination = ref({
       current: 1,
@@ -108,7 +131,12 @@ export default defineComponent({
       pagination,
       ebooks,
       loading,
-      handleTableChange
+      handleTableChange,
+
+      edit,
+      modalVisible,
+      modalLoading,
+      handleModalOk
     }
   }
 })

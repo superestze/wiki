@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 
 export default defineComponent({
@@ -81,11 +81,18 @@ export default defineComponent({
 
     const ebooks = ref();
 
-    axios.get('/ebook/list')
-        .then(res => {
-          const data = res.data;
-          ebooks.value = data.content;
-        })
+    onMounted(() => {
+      axios.get('/ebook/list', {
+        params: {
+          page: 1,
+          size: 1000
+        }
+      }).then(res => {
+        const data = res.data;
+        ebooks.value = data.content.list;
+      })
+    })
+
 
     return {
       actions: [

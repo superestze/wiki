@@ -1,6 +1,7 @@
 package com.jiawa.wiki.resp;
 
 public class EbookQueryResp {
+    private Long id;
     private String name;
 
     private Long category1Id;
@@ -17,13 +18,13 @@ public class EbookQueryResp {
 
     private Integer voteCount;
 
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

@@ -81,17 +81,18 @@ export default defineComponent({
     const handleModalOk = () => {
       modalLoading.value = true
       axios.post('/ebook/save', ebook.value).then(res => {
+        modalLoading.value = false
         const data = res.data
         if (data.success) {
           modalVisible.value = false
-          modalLoading.value = false
           //  重新加载列表
 
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
           })
-
+        } else {
+          message.error(data.message)
         }
       })
     }

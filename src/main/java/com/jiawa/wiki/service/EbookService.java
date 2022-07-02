@@ -40,17 +40,16 @@ public class EbookService {
         // 只对第一个 sql 有效
         PageHelper.startPage(req.getPage(), req.getSize());
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
-
         PageInfo<Ebook> pageInfo = new PageInfo<>(ebookList);
-        pageInfo.getTotal();
-        pageInfo.getPages();
-//        List<EbookResp> respList = new ArrayList<>();
-//        for (Ebook ebook : ebookList) {
-////            EbookResp ebookResp = new EbookResp();
-////            BeanUtils.copyProperties(ebook, ebookResp);
-//            EbookResp ebookResp = CopyUtil.copy(ebook, EbookResp.class);
-//            respList.add(ebookResp);
-//        }
+        // pageInfo.getTotal();
+        // pageInfo.getPages();
+        // List<EbookResp> respList = new ArrayList<>();
+        // for (Ebook ebook : ebookList) {
+        //     EbookResp ebookResp = new EbookResp();
+        //     BeanUtils.copyProperties(ebook, ebookResp);
+        //     EbookResp ebookResp = CopyUtil.copy(ebook, EbookResp.class);
+        //     respList.add(ebookResp);
+        // }
         List<EbookQueryResp> list = CopyUtil.copyList(ebookList, EbookQueryResp.class);
         PageResp<EbookQueryResp> pageResp = new PageResp<>();
         pageResp.setTotal(pageInfo.getTotal());

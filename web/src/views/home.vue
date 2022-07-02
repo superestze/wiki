@@ -77,7 +77,7 @@ export default defineComponent({
         params: {
           page: 1,
           size: 1000,
-          categoryId2: categoryId2
+          // categoryId2: categoryId2
         }
       }).then(res => {
         const data = res.data;

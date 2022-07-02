@@ -63,22 +63,27 @@ import {message} from "ant-design-vue";
 export default defineComponent({
   name: 'Home',
   setup() {
-
+    let categoryId2 = 0;
     const ebooks = ref();
     const isShowWelcome = ref(true);
     const level1 = ref();
     onMounted(() => {
       handleQueryCategory()
+      handleQueryEbook()
+    })
+
+    const handleQueryEbook = () => {
       axios.get('/ebook/list', {
         params: {
           page: 1,
-          size: 1000
+          size: 1000,
+          categoryId2: categoryId2
         }
       }).then(res => {
         const data = res.data;
         ebooks.value = data.content.list;
       })
-    })
+    }
 
     const handleQueryCategory = () => {
       axios.get("/category/all").then(res => {
@@ -94,7 +99,13 @@ export default defineComponent({
     }
 
     const handleClick = (value: any) => {
-      isShowWelcome.value = value.key === "welcome";
+      if (value.key === 'welcome') {
+        isShowWelcome.value = true
+      } else {
+        categoryId2 = value.key
+        isShowWelcome.value = false
+        handleQueryEbook()
+      }
     }
 
     return {

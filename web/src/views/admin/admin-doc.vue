@@ -55,18 +55,22 @@
       <a-form-item label="名称">
         <a-input v-model:value="doc.name"/>
       </a-form-item>
-      <a-form-item label="父文档">
-        <a-select
-            ref="select"
+      <a-form-item label="名称">
+        <a-tree-select
             v-model:value="doc.parent"
             style="width: 100%"
+            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+            placeholder="请选择父文档"
+            allow-clear
+            tree-default-expand-all
+            :tree-data="treeSelectData"
+            :replaceFields="{
+               title: 'name',
+               key: 'id',
+               value: 'id'
+            }"
         >
-          <a-select-option value="0">无</a-select-option>
-          <a-select-option :disabled="doc.id === c.id" v-for="c in level1" :key="c.id" :value="c.id">{{
-              c.name
-            }}
-          </a-select-option>
-        </a-select>
+        </a-tree-select>
       </a-form-item>
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort"/>
@@ -87,8 +91,10 @@ import {Tool} from "@/util/tool";
 export default defineComponent({
   name: 'AdminDoc',
   setup() {
+    const treeSelectData = ref()
+    treeSelectData.value = []
     const level1 = ref()
-    const doc = ref()
+    const doc = ref({})
     const modalVisible = ref(false)
     const modalLoading = ref(false)
     const param = ref();
@@ -157,6 +163,7 @@ export default defineComponent({
 
     const handleQuery = () => {
       loading.value = true
+      level1.value = []
       axios.get('/doc/all').then(res => {
         loading.value = false
         const data = res.data

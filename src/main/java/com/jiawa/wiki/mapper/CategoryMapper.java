@@ -2,9 +2,7 @@ package com.jiawa.wiki.mapper;
 
 import com.jiawa.wiki.domain.Category;
 import com.jiawa.wiki.domain.CategoryExample;
-
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface CategoryMapper {

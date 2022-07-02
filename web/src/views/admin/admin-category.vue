@@ -6,11 +6,7 @@
       <p>
         <a-form layout="inline" :model="param">
           <a-form-item>
-            <a-input v-model:value="param.name" placeholder="名称">
-            </a-input>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
+            <a-button type="primary" @click="handleQuery()">
               查询
             </a-button>
           </a-form-item>
@@ -23,10 +19,9 @@
       </p>
       <a-table :columns="columns"
                :row-key="record => record.id"
-               :data-source="categorys"
-               :pagination="pagination"
+               :data-source="level1"
                :loading="loading"
-               @change="handleTableChange"
+               :pagination="false"
       >
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar">
@@ -82,6 +77,7 @@ import {Tool} from "@/util/tool";
 export default defineComponent({
   name: 'AdminCategory',
   setup() {
+    const level1 = ref()
     const category = ref()
     const modalVisible = ref(false)
     const modalLoading = ref(false)
@@ -96,10 +92,7 @@ export default defineComponent({
           modalVisible.value = false
           //  重新加载列表
 
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          })
+          handleQuery()
         } else {
           message.error(data.message)
         }
@@ -115,10 +108,7 @@ export default defineComponent({
       axios.delete(`/category/delete/${id}`).then(res => {
         const data = res.data
         if (data.success) {
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          })
+          handleQuery()
         }
       })
     }
@@ -129,11 +119,6 @@ export default defineComponent({
     }
 
     const categorys = ref()
-    const pagination = ref({
-      current: 1,
-      pageSize: 10,
-      total: 0
-    })
     const columns = [
 
       {
@@ -160,33 +145,23 @@ export default defineComponent({
       }
     ];
 
-    const handleQuery = (params: any) => {
+    const handleQuery = () => {
       loading.value = true
-      axios.get('/category/list', {params}).then(res => {
+      axios.get('/category/all').then(res => {
         loading.value = false
         const data = res.data
         if (data.success) {
-          categorys.value = data.content.list
-          pagination.value.current = params.page
-          pagination.value.total = data.content.total
+          categorys.value = data.content
+          level1.value = []
+          level1.value = Tool.array2Tree(categorys.value, 0)
         } else {
           message.error(data.message)
         }
       })
     }
 
-    const handleTableChange = (pagination: any) => {
-      handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
-      })
-    }
-
     onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      })
+      handleQuery()
     })
 
 
@@ -194,10 +169,8 @@ export default defineComponent({
 
     return {
       columns,
-      pagination,
       categorys,
       loading,
-      handleTableChange,
 
       edit,
       add,
@@ -208,7 +181,8 @@ export default defineComponent({
       handleModalOk,
       category,
       param,
-      handleQuery
+      handleQuery,
+      level1
     }
   }
 })

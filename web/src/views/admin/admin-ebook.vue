@@ -88,6 +88,8 @@ import {Tool} from "@/util/tool";
 export default defineComponent({
   name: 'AdminEbook',
   setup() {
+    const categoryIds = ref()
+    const level1 = ref()
     const ebook = ref()
     const modalVisible = ref(false)
     const modalLoading = ref(false)
@@ -95,6 +97,9 @@ export default defineComponent({
     param.value = {};
     const handleModalOk = () => {
       modalLoading.value = true
+      ebook.value.category1Id = categoryIds.value[0]
+      ebook.value.category2Id = categoryIds.value[2]
+
       axios.post('/ebook/save', ebook.value).then(res => {
         modalLoading.value = false
         const data = res.data
@@ -112,9 +117,25 @@ export default defineComponent({
       })
     }
 
+    const handleQueryCategory = () => {
+      loading.value = true
+      axios.get("/category/all").then(res => {
+        loading.value = false
+        const data = res.data
+        if (data.success) {
+          const categorys = data.content
+          level1.value = []
+          level1.value = Tool.array2Tree(categorys, 0)
+        } else {
+          message.error(data.message)
+        }
+      })
+    }
+
     const edit = (record: any) => {
       modalVisible.value = true
       ebook.value = Tool.copy(record)
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
     }
 
     const handleDelete = (id: number) => {
@@ -200,6 +221,7 @@ export default defineComponent({
         page: 1,
         size: pagination.value.pageSize
       })
+      handleQueryCategory()
     })
 
 
@@ -221,7 +243,9 @@ export default defineComponent({
       handleModalOk,
       ebook,
       param,
-      handleQuery
+      handleQuery,
+      categoryIds,
+      level1
     }
   }
 })

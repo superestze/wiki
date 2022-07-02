@@ -77,24 +77,29 @@ insert into `doc` (id, ebook_id, parent, name, sort, view_count, vote_count) val
 
 -- 文档内容
 drop table if exists `content`;
-create table `content` (
-                           `id` bigint not null comment '文档id',
-                           `content` mediumtext not null comment '内容',
-                           primary key (`id`)
-) engine=innodb default charset=utf8mb4 comment='文档内容';
+create table `content`
+(
+    `id`      bigint     not null comment '文档id',
+    `content` mediumtext not null comment '内容',
+    primary key (`id`)
+) engine = innodb
+  default charset = utf8mb4 comment ='文档内容';
 
 -- 用户表
 drop table if exists `user`;
-create table `user` (
-                        `id` bigint not null comment 'ID',
-                        `login_name` varchar(50) not null comment '登陆名',
-                        `name` varchar(50) comment '昵称',
-                        `password` char(32) not null comment '密码',
-                        primary key (`id`),
-                        unique key `login_name_unique` (`login_name`)
-) engine=innodb default charset=utf8mb4 comment='用户';
+create table `user`
+(
+    `id`         bigint      not null comment 'ID',
+    `login_name` varchar(50) not null comment '登陆名',
+    `name`       varchar(50) comment '昵称',
+    `password`   char(32)    not null comment '密码',
+    primary key (`id`),
+    unique key `login_name_unique` (`login_name`)
+) engine = innodb
+  default charset = utf8mb4 comment ='用户';
 
-insert into `user` (id, `login_name`, `name`, `password`) values (1, 'test', '测试', 'e70e2222a9d67c4f2eae107533359aa4');
+insert into `user` (id, `login_name`, `name`, `password`)
+values (1, 'test', '测试', 'test');
 
 -- 电子书快照表
 drop table if exists `ebook_snapshot`;

@@ -126,6 +126,10 @@ export default defineComponent({
           const categorys = data.content
           level1.value = []
           level1.value = Tool.array2Tree(categorys, 0)
+          handleQuery({
+            page: 1,
+            size: pagination.value.pageSize
+          })
         } else {
           message.error(data.message)
         }
@@ -217,10 +221,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      })
+
       handleQueryCategory()
     })
 

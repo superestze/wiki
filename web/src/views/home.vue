@@ -26,7 +26,10 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-list item-layout="vertical" :grid="{ gutter: 20, column: 3 }" size="large"
+      <div class="welcome" v-show="isShowWelcome">
+        <h1> 欢迎使用知识库 </h1>
+      </div>
+      <a-list v-show="!isShowWelcome" item-layout="vertical" :grid="{ gutter: 20, column: 3 }" size="large"
               :data-source="ebooks">
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
@@ -62,6 +65,7 @@ export default defineComponent({
   setup() {
 
     const ebooks = ref();
+    const isShowWelcome = ref(true);
     const level1 = ref();
     onMounted(() => {
       handleQueryCategory()
@@ -89,10 +93,9 @@ export default defineComponent({
       })
     }
 
-    const handleClick = () => {
-      console.log("menu-click")
+    const handleClick = (value: any) => {
+      isShowWelcome.value = value.key === "welcome";
     }
-
 
     return {
       actions: [
@@ -102,7 +105,8 @@ export default defineComponent({
       ],
       ebooks,
       handleClick,
-      level1
+      level1,
+      isShowWelcome
     }
   }
 });

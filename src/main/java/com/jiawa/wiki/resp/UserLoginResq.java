@@ -1,9 +1,11 @@
 package com.jiawa.wiki.resp;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 public class UserLoginResq {
     private Long id;
+    private Long token;
 
     @NotNull(message = "用户名 不能为空")
     private String loginName;
@@ -34,16 +36,21 @@ public class UserLoginResq {
         this.name = name;
     }
 
+    public Long getToken() {
+        return token;
+    }
+
+    public void setToken(Long token) {
+        this.token = token;
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", loginName=").append(loginName);
-        sb.append(", name=").append(name);
-        sb.append("]");
-        return sb.toString();
+        return "UserLoginResq{" +
+                "id=" + id +
+                ", token=" + token +
+                ", loginName='" + loginName + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

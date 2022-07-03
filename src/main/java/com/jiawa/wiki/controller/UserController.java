@@ -1,21 +1,31 @@
 package com.jiawa.wiki.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jiawa.wiki.req.UserLoginReq;
 import com.jiawa.wiki.req.UserQueryReq;
 import com.jiawa.wiki.req.UserSaveReq;
 import com.jiawa.wiki.resp.*;
 import com.jiawa.wiki.service.UserService;
+import com.jiawa.wiki.util.SnowFlake;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
     @Resource
     private UserService userService;
+
+    @Resource
+    private SnowFlake snowFlake;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @GetMapping("/list")
     public CommonResp list(@Valid UserQueryReq req) {
@@ -53,6 +63,12 @@ public class UserController {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp resp = new CommonResp<>();
         UserLoginResq userLoginResq = userService.login(req);
+
+        // 生产单点登录 token， 并存入 reids
+        Long token = snowFlake.nextId();
+        userLoginResq.setToken(token);
+        redisTemplate.opsForValue().set(token, JSONObject.toJSONString(userLoginResq), 3600 * 24, TimeUnit.SECONDS);
+
         resp.setContent(userLoginResq);
         return resp;
     }

@@ -11,6 +11,7 @@ import com.jiawa.wiki.req.UserQueryReq;
 import com.jiawa.wiki.req.UserSaveReq;
 import com.jiawa.wiki.resp.PageResp;
 import com.jiawa.wiki.resp.UserQueryResp;
+import com.jiawa.wiki.resp.UserResetPasswordResp;
 import com.jiawa.wiki.util.CopyUtil;
 import com.jiawa.wiki.util.SnowFlake;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,9 @@ public class UserService {
             }
 
         } else {
+            // 更新
             user.setLoginName(null);
+            user.setPassword(null);
             userMapper.updateByPrimaryKey(user);
         }
     }
@@ -92,4 +95,11 @@ public class UserService {
             return userList.get(0);
         }
     }
+
+
+    public void resetPassword(UserResetPasswordResp req) {
+        User user = CopyUtil.copy(req, User.class);
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
 }

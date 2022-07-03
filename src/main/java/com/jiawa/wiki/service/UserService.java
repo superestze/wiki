@@ -7,9 +7,11 @@ import com.jiawa.wiki.domain.UserExample;
 import com.jiawa.wiki.exception.BusinessException;
 import com.jiawa.wiki.exception.BusinessExceptionCode;
 import com.jiawa.wiki.mapper.UserMapper;
+import com.jiawa.wiki.req.UserLoginReq;
 import com.jiawa.wiki.req.UserQueryReq;
 import com.jiawa.wiki.req.UserSaveReq;
 import com.jiawa.wiki.resp.PageResp;
+import com.jiawa.wiki.resp.UserLoginResq;
 import com.jiawa.wiki.resp.UserQueryResp;
 import com.jiawa.wiki.resp.UserResetPasswordResp;
 import com.jiawa.wiki.util.CopyUtil;
@@ -102,4 +104,20 @@ public class UserService {
         userMapper.updateByPrimaryKeySelective(user);
     }
 
+    public UserLoginResq login(UserLoginReq req) {
+        User userDb = selectLoginName(req.getLoginName());
+        if (ObjectUtils.isEmpty(userDb)) {
+            //     用户名不存在
+            throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+        } else {
+            if (userDb.getPassword().equals(req.getPassword())) {
+                //    登录成功
+                UserLoginResq userLoginResq = CopyUtil.copy(userDb, UserLoginResq.class);
+                return userLoginResq;
+            } else {
+                //    密码不对
+                throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+            }
+        }
+    }
 }

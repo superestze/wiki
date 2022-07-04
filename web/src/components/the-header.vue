@@ -142,7 +142,6 @@ export default defineComponent({
   color: white;
   font-size: 18px;
 }
-
 .login-menu {
   float: right;
   color: white;

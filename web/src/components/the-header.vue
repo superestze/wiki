@@ -24,23 +24,31 @@
       <a-menu-item key="/aliyun">
         <router-link to="/aliyun">阿里云优惠</router-link>
       </a-menu-item>
-      <a-popconfirm
-          title="确认退出登录?"
-          ok-text="是"
-          cancel-text="否"
-          @confirm="logout()"
-      >
-        <a class="login-menu" v-show="user.id">
-          <span>退出登录</span>
+    </a-menu>
+    <div class="login-menu">
+      <a-space>
+        <a v-show="user.id">
+          <span style="margin-right: 8px;">您好：{{ user.name }}</span>
         </a>
-      </a-popconfirm>
-      <a class="login-menu" v-show="user.id">
-        <span>您好：{{ user.name }}</span>
-      </a>
-      <a class="login-menu" v-show="!user.id" @click="showLoginModal">
+      </a-space>
+      <a-space>
+        <a-popconfirm
+            title="确认退出登录?"
+            ok-text="是"
+            cancel-text="否"
+            @confirm="logout()"
+        >
+          <a v-show="user.id">
+            <span>退出登录</span>
+          </a>
+        </a-popconfirm>
+      </a-space>
+
+      <a v-show="!user.id" @click="showLoginModal">
         <span>登录</span>
       </a>
-    </a-menu>
+    </div>
+
 
     <a-modal
         title="登录"
@@ -133,6 +141,11 @@ export default defineComponent({
 </script>
 
 <style>
+.header {
+  display: flex;
+  flex-direction: row;
+}
+
 .logo {
   width: 120px;
   height: 31px;
@@ -142,9 +155,9 @@ export default defineComponent({
   color: white;
   font-size: 18px;
 }
+
 .login-menu {
-  float: right;
-  color: white;
-  padding-left: 10px;
+  position: absolute;
+  right: 20px;
 }
 </style>

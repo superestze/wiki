@@ -5,6 +5,8 @@ import AdminEbook from '../views/admin/admin-ebook.vue'
 import CategoryEbook from '../views/admin/admin-category.vue'
 import AdminDoc from '../views/admin/admin-doc.vue'
 import AdminUser from '../views/admin/admin-user.vue'
+import store from "@/store";
+import {Tool} from "@/util/tool";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -23,19 +25,31 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/admin/ebook',
         name: 'AdminEbook',
-        component: AdminEbook
+        component: AdminEbook,
+        meta: {
+            loginRequire: true
+        }
     }, {
         path: '/admin/category',
         name: 'CategoryEbook',
-        component: CategoryEbook
+        component: CategoryEbook,
+        meta: {
+            loginRequire: true
+        }
     }, {
         path: '/admin/doc',
         name: 'AdminDoc',
-        component: AdminDoc
+        component: AdminDoc,
+        meta: {
+            loginRequire: true
+        }
     }, {
         path: '/doc',
         name: 'Doc',
-        component: Doc
+        component: Doc,
+        meta: {
+            loginRequire: true
+        }
     }, {
         path: '/admin/user',
         name: 'AdminUser',
@@ -47,5 +61,22 @@ const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
 })
+
+router.beforeEach((to, from, next) => {
+        if (to.matched.some(function (item) {
+                return item.meta.loginRequire;
+            }
+        )) {
+            const loginUser = store.state.user
+            if (Tool.isEmpty(loginUser)) {
+                next('/')
+            } else {
+                next()
+            }
+        } else {
+            next()
+        }
+    }
+)
 
 export default router

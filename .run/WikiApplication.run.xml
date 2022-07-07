@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="WikiApplication" type="SpringBootApplicationConfigurationType"
+                   factoryName="Spring Boot">
+        <option name="ACTIVE_PROFILES"/>
+        <module name="wiki"/>
+        <option name="SPRING_BOOT_MAIN_CLASS" value="com.jiawa.wiki.config.WikiApplication"/>
+        <option name="VM_PARAMETERS" value="-Dspring.profiles.active=prod"/>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
+</component>

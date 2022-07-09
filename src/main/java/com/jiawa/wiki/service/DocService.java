@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.jiawa.wiki.domain.Content;
 import com.jiawa.wiki.domain.Doc;
 import com.jiawa.wiki.domain.DocExample;
+import com.jiawa.wiki.exception.BusinessException;
+import com.jiawa.wiki.exception.BusinessExceptionCode;
 import com.jiawa.wiki.mapper.ContentMapper;
 import com.jiawa.wiki.mapper.DocMapper;
 import com.jiawa.wiki.mapper.DocMapperCust;
@@ -13,7 +15,10 @@ import com.jiawa.wiki.req.DocSaveReq;
 import com.jiawa.wiki.resp.DocQueryResp;
 import com.jiawa.wiki.resp.PageResp;
 import com.jiawa.wiki.util.CopyUtil;
+import com.jiawa.wiki.util.RedisUtil;
+import com.jiawa.wiki.util.RequestContext;
 import com.jiawa.wiki.util.SnowFlake;
+import com.sun.jdi.event.StepEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -31,6 +36,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    public RedisUtil redisUtil;
 
     public PageResp<DocQueryResp> list(DocQueryReq req) {
 
@@ -114,6 +122,14 @@ public class DocService {
     }
 
     public void vote(Long id) {
-        docMapperCust.increaseVoteCount(id);
+        // docMapperCust.increaseVoteCount(id);
+        // 远程 ip 和 doc 作为 key, 24 小时不能重复
+        // 远程需要检验这个key 是否存在
+        String ip = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + ip, 5000)) {
+            docMapperCust.increaseVoteCount(id);
+        } else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }
     }
 }

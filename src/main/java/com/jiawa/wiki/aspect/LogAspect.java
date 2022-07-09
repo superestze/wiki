@@ -2,8 +2,9 @@ package com.jiawa.wiki.aspect;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
-//import com.jiawa.wiki.util.RequestContext;
-//import com.jiawa.wiki.util.SnowFlake;
+// import com.jiawa.wiki.util.RequestContext;
+// import com.jiawa.wiki.util.SnowFlake;
+import com.jiawa.wiki.util.RequestContext;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -30,9 +31,12 @@ public class LogAspect {
 
     private final static Logger LOG = LoggerFactory.getLogger(LogAspect.class);
 
-    /** 定义一个切点 */
+    /**
+     * 定义一个切点
+     */
     @Pointcut("execution(public * com.jiawa.*.controller..*Controller.*(..))")
-    public void controllerPointcut() {}
+    public void controllerPointcut() {
+    }
 
 //    @Resource
 //    private SnowFlake snowFlake;
@@ -55,13 +59,13 @@ public class LogAspect {
         LOG.info("类名方法: {}.{}", signature.getDeclaringTypeName(), name);
         LOG.info("远程地址: {}", request.getRemoteAddr());
 
-//        RequestContext.setRemoteAddr(getRemoteIp(request));
+        RequestContext.setRemoteAddr(getRemoteIp(request));
 
         // 打印请求参数
         Object[] args = joinPoint.getArgs();
         // LOG.info("请求参数: {}", JSONObject.toJSONString(args));
 
-        Object[] arguments  = new Object[args.length];
+        Object[] arguments = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             if (args[i] instanceof ServletRequest
                     || args[i] instanceof ServletResponse
@@ -94,6 +98,7 @@ public class LogAspect {
 
     /**
      * 使用nginx做反向代理，需要用该方法才能取到真实的远程IP
+     *
      * @param request
      * @return
      */

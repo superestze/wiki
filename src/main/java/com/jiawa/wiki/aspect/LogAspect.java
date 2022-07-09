@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 public class LogAspect {
 
     private final static Logger LOG = LoggerFactory.getLogger(LogAspect.class);
-    private SnowFlake snowFlake;
 
     /**
      * 定义一个切点
@@ -40,8 +39,8 @@ public class LogAspect {
     public void controllerPointcut() {
     }
 
-//    @Resource
-//    private SnowFlake snowFlake;
+   @Resource
+   private SnowFlake snowFlake;
 
     @Before("controllerPointcut()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {

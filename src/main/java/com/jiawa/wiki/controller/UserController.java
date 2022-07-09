@@ -1,12 +1,15 @@
 package com.jiawa.wiki.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jiawa.wiki.interceptor.LoginInterceptor;
 import com.jiawa.wiki.req.UserLoginReq;
 import com.jiawa.wiki.req.UserQueryReq;
 import com.jiawa.wiki.req.UserSaveReq;
 import com.jiawa.wiki.resp.*;
 import com.jiawa.wiki.service.UserService;
 import com.jiawa.wiki.util.SnowFlake;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    private static final Logger LOG = LoggerFactory.getLogger(LoginInterceptor.class);
     @Resource
     private UserService userService;
 
@@ -66,6 +70,7 @@ public class UserController {
 
         // 生产单点登录 token， 并存入 reids
         Long token = snowFlake.nextId();
+        LOG.info("生产单点登录 token{},并放入 redis 中", token);
         userLoginResq.setToken(token);
         redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResq), 3600 * 24, TimeUnit.SECONDS);
 

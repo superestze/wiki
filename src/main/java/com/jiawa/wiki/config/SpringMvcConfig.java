@@ -33,6 +33,10 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         "/ebook-snapshot/**"
                 );
 
+        // 为什么要做后端的拦截呢？ 要是不使用拦截的话， 所有的接口都类似在裸奔，
+        // 别人可以试用工具任意的调用你的接口， 这样给服务器造成的压力就会非常的大
+        // 一旦有人作恶， 自己的整个系统可能都会崩溃， 因此， 是有必要做登录校验的
+
         // registry.addInterceptor(actionInterceptor)
         //         .addPathPatterns(
         //                 "/*/save",

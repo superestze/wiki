@@ -50,6 +50,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
+        // 从 redis 中获取 token
         Object object = redisTemplate.opsForValue().get(token);
         if (object == null) {
             LOG.warn("token无效，请求被拦截");
@@ -73,3 +74,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 //        LOG.info("LogInterceptor 结束");
     }
 }
+
+/*
+ * 这个是登录拦截组件， 使用拦截建， 有三个方法，需要继承 HandlerInterceptor
+ * 在类中需要重写三个方法， preHandle, postHandel, AfterComplete
+ *
+ * */

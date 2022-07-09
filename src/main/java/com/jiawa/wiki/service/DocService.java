@@ -18,6 +18,7 @@ import com.jiawa.wiki.util.CopyUtil;
 import com.jiawa.wiki.util.RedisUtil;
 import com.jiawa.wiki.util.RequestContext;
 import com.jiawa.wiki.util.SnowFlake;
+import com.jiawa.wiki.websocket.WebSocketServer;
 import com.sun.jdi.event.StepEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -39,6 +40,8 @@ public class DocService {
 
     @Resource
     public RedisUtil redisUtil;
+    @Resource
+    public WebSocketServer webSocketServer;
 
     public PageResp<DocQueryResp> list(DocQueryReq req) {
 
@@ -121,6 +124,10 @@ public class DocService {
         }
     }
 
+    /**
+     * 点赞
+     * @param id
+     */
     public void vote(Long id) {
         // docMapperCust.increaseVoteCount(id);
         // 远程 ip 和 doc 作为 key, 24 小时不能重复
@@ -131,6 +138,9 @@ public class DocService {
         } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
+        // 推送消
+        Doc docDb = docMapper.selectByPrimaryKey(id);
+        webSocketServer.sendInfo(docDb.getName() + "被点赞");
     }
 
     public void updateEbookInfo() {

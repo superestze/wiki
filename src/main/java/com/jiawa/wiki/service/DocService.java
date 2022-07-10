@@ -20,6 +20,7 @@ import com.jiawa.wiki.util.RequestContext;
 import com.jiawa.wiki.util.SnowFlake;
 import com.jiawa.wiki.websocket.WebSocketServer;
 import com.sun.jdi.event.StepEvent;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -40,8 +41,10 @@ public class DocService {
 
     @Resource
     public RedisUtil redisUtil;
+
     @Resource
-    public WebSocketServer webSocketServer;
+    public WsService wsService;
+
 
     public PageResp<DocQueryResp> list(DocQueryReq req) {
 
@@ -126,6 +129,7 @@ public class DocService {
 
     /**
      * 点赞
+     *
      * @param id
      */
     public void vote(Long id) {
@@ -140,7 +144,7 @@ public class DocService {
         }
         // 推送消
         Doc docDb = docMapper.selectByPrimaryKey(id);
-        webSocketServer.sendInfo(docDb.getName() + "被点赞");
+        wsService.sendInfo(docDb.getName() + "被点赞");
     }
 
     public void updateEbookInfo() {

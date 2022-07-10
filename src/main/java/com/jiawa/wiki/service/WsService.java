@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 public class WsService {
     @Resource
     public WebSocketServer webSocketServer;
+
+    // 调用这个函数时候， 调用方和当前函数不能在同一个类中
     @Async
     public void sendInfo(String message, String logId) {
         MDC.put("LOG_ID", logId);
